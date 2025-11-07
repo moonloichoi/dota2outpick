@@ -81,6 +81,7 @@
         <div id="itemList" class="list"><span style="color:var(--muted)">Add heroes to the queue.</span></div>
       </div>
     </section>
+  <div id="warn" style="display:none;margin:0 14px 14px;color:#ffb4a9;background:#2a1b1b;border:1px solid #5a3030;padding:8px 10px;border-radius:10px">Data not loaded. Check <code>heroes.json</code> is valid JSON (no comments/trailing commas) and reachable.</div>
   </main>
 
   <script>
@@ -186,8 +187,8 @@
     async function loadData(){
       try{
         const [heroes, items] = await Promise.all([
-          fetch('./heroes.json').then(r=>r.json()),
-          fetch('./items.json').then(r=>r.json()).catch(()=> ({}))
+          fetch('./heroes.json?v=' + Date.now()).then(r=>r.json()),
+          fetch('./items.json?v=' + Date.now()).then(r=>r.json()).catch(()=> ({}))
         ]);
         // attach image paths based on slug
         Object.keys(heroes).forEach(slug=>{ heroes[slug].img = heroImg(slug); });
@@ -197,6 +198,7 @@
       }catch(e){
         console.error('Failed to load data JSON. Falling back to empty sets.', e);
         HEROES = {}; ITEMS = {};
+        const w = document.getElementById('warn'); if(w) w.style.display='block';
         init();
       }
     }

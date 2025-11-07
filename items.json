@@ -1,0 +1,6 @@
+// items.json
+{
+  "eul_s_scepter": { "name": "Eul's Scepter" },
+  "force_staff":   { "name": "Force Staff"  },
+  "ghost_scepter": { "name": "Ghost Scepter"}
+}

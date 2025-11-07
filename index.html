@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dota 2 Draft Helper — Fresh Minimal Build</title>
+  <title>Dota 2 Draft Helper — Minimal (Rebuilt)</title>
   <style>
     :root{ --bg:#0b0f14; --card:#111722; --soft:#151f2b; --text:#e6edf3; --muted:#9fb0c3; --line:#1d2a3a; }
     *{box-sizing:border-box}
@@ -12,45 +12,51 @@
     .bar{max-width:1200px;margin:0 auto;padding:.75rem 1rem;display:flex;gap:12px;align-items:center}
     .brand{font-weight:800}
 
-    main{max-width:1200px;margin:0 auto;padding:14px;display:grid;gap:12px}
+    main{max-width:1200px;margin:0 auto;padding:14px;display:grid;gap:12px;grid-template-columns:1fr 1fr}
 
     /* Enemy queue */
-    .queue{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+    .queue{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;grid-column:1 / -1}
     .qtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-    .slots{display:flex;gap:8px}
+    .slots{display:flex;gap:8px;justify-content:center}
     .slot{width:72px;height:40px;border-radius:8px;display:grid;place-items:center;border:1px dashed #2a3a52;color:#7f92a7;background:#0e141b;overflow:hidden}
     .slot.filled{border-style:solid;border-color:#2d466a}
     .slot img{width:100%;height:100%;object-fit:cover}
-    .btn{background:#182330;border:1px solid #23334a;color:#cfe1ff;border-radius:10px;padding:.42rem .7rem;cursor:pointer}
+    .btn{background:#182330;border:1px solid #23334a;color:#cfe1ff;border-radius:12px;padding:.7rem 1.1rem;font-size:1rem;font-weight:700;cursor:pointer}
 
-    /* Pool */
-    .pool{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+    /* Pool (left) */
+    .pool{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;grid-column:1 / 2}
     .searchbar{margin-bottom:8px}
     .searchbar input{width:100%;background:#0e141b;border:1px solid #1b2a3d;color:var(--text);border-radius:10px;padding:.55rem .7rem}
-    .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-height:370px;overflow:auto;padding-right:4px}
-    .tile{position:relative;height:110px;border:1px solid #213247;border-radius:12px;overflow:hidden;cursor:pointer;background:#1a2432}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-height:410px;overflow:auto;padding-right:4px}
+    .tile{position:relative;height:120px;border:1px solid #213247;border-radius:12px;overflow:hidden;cursor:pointer;background:#1a2432}
     .tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(92%) contrast(1.02)}
     .tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.0) 40%, rgba(0,0,0,.55));}
     .tname{position:absolute;left:8px;bottom:6px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+    .tile.picked{outline:3px solid #3b82f6; box-shadow:0 0 0 2px rgba(59,130,246,.35) inset}
 
-    /* Suggestions */
-    .suggest{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    /* Suggestions (right) */
+    .suggest{grid-column:2 / 3;display:grid;grid-template-rows:1fr 1fr;gap:12px}
     .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
     .card h3{margin:.1rem 0 .5rem;font-size:1rem;color:#cfe1ff}
-    .list{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:300px;overflow:auto;padding-right:4px}
-    .sug{position:relative;height:86px;border:1px solid #213247;border-radius:10px;overflow:hidden;background:#1a2432}
+    .list{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:220px;overflow:auto;padding-right:4px}
+    .sug{position:relative;height:100px;border:1px solid #213247;border-radius:10px;overflow:hidden;background:#1a2432}
     .sug img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
     .sug::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.0) 40%, rgba(0,0,0,.6));}
     .sname{position:absolute;left:8px;bottom:6px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+    .sources{position:absolute;right:6px;top:6px;display:flex;gap:4px}
+    .src{width:18px;height:18px;border-radius:4px;overflow:hidden;border:1px solid rgba(255,255,255,.3);box-shadow:0 1px 4px rgba(0,0,0,.35)}
+    .src img{width:100%;height:100%;object-fit:cover}
+    .src.more{display:grid;place-items:center;background:#0e141b;color:#cfe1ff;font-size:.7rem;font-weight:800;border:1px solid #2a3a52}
 
-    @media (max-width:860px){.suggest{grid-template-columns:1fr}.grid{grid-template-columns:repeat(3,1fr)}}
+    #warn{display:none;margin:0 14px 14px;color:#ffb4a9;background:#2a1b1b;border:1px solid #5a3030;padding:8px 10px;border-radius:10px}
+    @media (max-width:860px){.suggest{grid-column:1 / -1;grid-template-rows:unset;grid-template-columns:1fr}.grid{grid-template-columns:repeat(3,1fr)}}
   </style>
 </head>
 <body>
   <header>
     <div class="bar">
-      <div class="brand">Draft Helper · Minimal (Fresh)</div>
-      <div style="color:var(--muted)">Operate only in Enemy Queue & Hero Pool. Suggestions are view-only.</div>
+      <div class="brand">Draft Helper · Minimal (Rebuilt)</div>
+      <div style="color:var(--muted)">Only interact with Enemy Queue & Hero Pool. Suggestions are view-only.</div>
     </div>
   </header>
 
@@ -64,13 +70,13 @@
       <div id="slots" class="slots"></div>
     </section>
 
-    <!-- Pool -->
+    <!-- Pool (left) -->
     <section class="pool">
       <div class="searchbar"><input id="search" placeholder="Search hero…" /></div>
       <div id="grid" class="grid"></div>
     </section>
 
-    <!-- Suggestions -->
+    <!-- Suggestions (right) -->
     <section class="suggest">
       <div class="card">
         <h3>Suggestion Pick <span style="color:var(--muted)">(counters to enemy)</span></h3>
@@ -81,18 +87,18 @@
         <div id="itemList" class="list"><span style="color:var(--muted)">Add heroes to the queue.</span></div>
       </div>
     </section>
-  <div id="warn" style="display:none;margin:0 14px 14px;color:#ffb4a9;background:#2a1b1b;border:1px solid #5a3030;padding:8px 10px;border-radius:10px">Data not loaded. Check <code>heroes.json</code> is valid JSON (no comments/trailing commas) and reachable.</div>
+
+    <div id="warn">Data not loaded. Check <code>heroes.json</code> is valid JSON (no comments/trailing commas) and reachable.</div>
   </main>
 
   <script>
     // ======================== DATA ========================
     let HEROES = {};
-
     let ITEMS = {};
-
     const MAX = 5;
     let enemyQueue = [];
 
+    // Shortcuts
     const el = (id)=>document.getElementById(id);
     const slots = el('slots');
     const grid = el('grid');
@@ -102,7 +108,7 @@
     const pickList = el('pickList');
     const itemList = el('itemList');
 
-    // ============= RENDER =============
+    // ======================== RENDER ========================
     function renderQueue(){
       slots.innerHTML='';
       for(let i=0;i<MAX;i++){
@@ -125,52 +131,98 @@
     function renderPool(){
       grid.innerHTML='';
       Object.entries(HEROES)
-        .filter(([slug])=> !enemyQueue.includes(slug))
         .filter(([_,h])=> filterBySearch(h))
         .sort((a,b)=> a[1].name.localeCompare(b[1].name))
         .forEach(([slug,h])=>{
+          const picked = enemyQueue.includes(slug);
           const t = document.createElement('div');
-          t.className='tile';
+          t.className='tile' + (picked ? ' picked' : '');
           t.innerHTML = `<img src="${h.img || placeholder('HERO')}" alt="${h.name}"><div class="tname">${h.name}</div>`;
-          t.onclick = ()=>{ if(enemyQueue.length<MAX){ enemyQueue.push(slug); update(); } };
+          t.onclick = ()=>{
+            const idx = enemyQueue.indexOf(slug);
+            if(idx >= 0){ enemyQueue.splice(idx,1); }
+            else if(enemyQueue.length < MAX){ enemyQueue.push(slug); }
+            update();
+          };
           grid.appendChild(t);
         });
     }
 
     function renderSuggestions(){
-      // Collect unique suggestions
-      const heroSet = new Set();
-      const itemSet = new Set();
-      enemyQueue.forEach(slug=>{
-        const h = HEROES[slug];
-        (h.counters||[]).forEach(c=> heroSet.add(c));
-        (h.item_counters||[]).forEach(it=> itemSet.add(it));
+      // Build maps: suggestion -> Set(enemy sources)
+      const heroSources = new Map();
+      const itemSources = new Map();
+
+      enemyQueue.forEach(eSlug=>{
+        const enemy = HEROES[eSlug];
+        (enemy?.counters||[]).forEach(sug=>{
+          if(enemyQueue.includes(sug)) return; // don't suggest already picked
+          if(!heroSources.has(sug)) heroSources.set(sug, new Set());
+          heroSources.get(sug).add(eSlug);
+        });
+        (enemy?.item_counters||[]).forEach(item=>{
+          const key = itemSlug(item);
+          if(!itemSources.has(key)) itemSources.set(key, new Set());
+          itemSources.get(key).add(eSlug);
+        });
       });
-      enemyQueue.forEach(slug=> heroSet.delete(slug));
 
-      const heroes = [...heroSet].filter(s=>HEROES[s]).sort((a,b)=>HEROES[a].name.localeCompare(HEROES[b].name));
-      const items  = [...itemSet].sort((a,b)=>a.localeCompare(b));
+      const heroList = [...heroSources.keys()]
+        .filter(s=>HEROES[s])
+        .sort((a,b)=> HEROES[a].name.localeCompare(HEROES[b].name))
+        .slice(0,8);
+      const itemListArr = [...itemSources.keys()]
+        .sort((a,b)=> a.localeCompare(b))
+        .slice(0,8);
 
+      // Render hero suggestions (view-only)
       pickList.innerHTML='';
-      itemList.innerHTML='';
-      if(!heroes.length) pickList.innerHTML = `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
-      if(!items.length) itemList.innerHTML  = `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
-
-      heroes.forEach(slug=>{
+      if(heroList.length===0) pickList.innerHTML = `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
+      heroList.forEach(slug=>{
         const h = HEROES[slug];
         const e = document.createElement('div');
         e.className='sug';
-        e.innerHTML = `<img src="${h.img || placeholder('HERO')}" alt="${h.name}"><div class="sname">${h.name}</div>`;
-        // view-only (unclickable)
+        e.innerHTML = `
+          <img src="${h.img || placeholder('HERO')}" alt="${h.name}">
+          <div class="sname">${h.name}</div>`;
+        // attach enemy source mini-avatars
+        const srcWrap = document.createElement('div'); srcWrap.className='sources';
+        const sources = [...(heroSources.get(slug)||[])];
+        sources.slice(0,3).forEach(slg=>{
+          const box = document.createElement('div'); box.className='src';
+          box.innerHTML = `<img src="${HEROES[slg]?.img || placeholder('H')}" alt="${HEROES[slg]?.name||''}">`;
+          srcWrap.appendChild(box);
+        });
+        if(sources.length>3){
+          const more = document.createElement('div'); more.className='src more'; more.textContent = `+${sources.length-3}`;
+          srcWrap.appendChild(more);
+        }
+        e.appendChild(srcWrap);
         pickList.appendChild(e);
       });
 
-      items.forEach(name=>{
-        const meta = ITEMS[itemSlug(name)];
+      // Render item suggestions (view-only), with enemy sources
+      itemList.innerHTML='';
+      if(itemListArr.length===0) itemList.innerHTML = `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
+      itemListArr.forEach(key=>{
+        const meta = ITEMS[key]||{name:key, img: placeholder('ITEM')};
         const e = document.createElement('div');
         e.className='sug';
-        const src = meta?.img || placeholder('ITEM');
-        e.innerHTML = `<img src="${src}" alt="${name}"><div class="sname">${name}</div>`;
+        e.innerHTML = `
+          <img src="${meta.img || placeholder('ITEM')}" alt="${meta.name}">
+          <div class="sname">${meta.name}</div>`;
+        const srcWrap = document.createElement('div'); srcWrap.className='sources';
+        const sources = [...(itemSources.get(key)||[])];
+        sources.slice(0,3).forEach(slg=>{
+          const box = document.createElement('div'); box.className='src';
+          box.innerHTML = `<img src="${HEROES[slg]?.img || placeholder('H')}" alt="${HEROES[slg]?.name||''}">`;
+          srcWrap.appendChild(box);
+        });
+        if(sources.length>3){
+          const more = document.createElement('div'); more.className='src more'; more.textContent = `+${sources.length-3}`;
+          srcWrap.appendChild(more);
+        }
+        e.appendChild(srcWrap);
         itemList.appendChild(e);
       });
     }
@@ -180,7 +232,7 @@
       return 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#223047"/><stop offset="1" stop-color="#0f1722"/></linearGradient></defs><rect fill="url(#g)" width="400" height="240"/><text x="20" y="210" fill="#cfe1ff" font-family="system-ui,Segoe UI,Roboto" font-size="26" font-weight="700">${t}</text></svg>`);
     }
 
-    // ============= DATA LOADER =============
+    // ======================== DATA LOADER ========================
     const heroImg = (slug) => `./assets/heroes/${slug}.png`;
     const itemImg = (slug) => `./assets/items/${slug}.png`;
 
@@ -190,20 +242,16 @@
           fetch('./heroes.json?v=' + Date.now()).then(r=>r.json()),
           fetch('./items.json?v=' + Date.now()).then(r=>r.json()).catch(()=> ({}))
         ]);
-        // attach image paths based on slug
         Object.keys(heroes).forEach(slug=>{ heroes[slug].img = heroImg(slug); });
         Object.keys(items).forEach(slug=>{ items[slug].img = itemImg(slug); });
-        HEROES = heroes; ITEMS = items;
-        init();
+        HEROES = heroes; ITEMS = items; init();
       }catch(e){
         console.error('Failed to load data JSON. Falling back to empty sets.', e);
-        HEROES = {}; ITEMS = {};
-        const w = document.getElementById('warn'); if(w) w.style.display='block';
-        init();
+        HEROES = {}; ITEMS = {}; const w = document.getElementById('warn'); if(w) w.style.display='block'; init();
       }
     }
 
-    // ============= STATE & EVENTS =============
+    // ======================== STATE & EVENTS ========================
     function update(){ renderQueue(); renderPool(); renderSuggestions(); save(); }
     function save(){ localStorage.setItem('enemyQueue', JSON.stringify(enemyQueue)); }
     function load(){ try{ enemyQueue = JSON.parse(localStorage.getItem('enemyQueue')||'[]'); }catch{ enemyQueue=[]; } }

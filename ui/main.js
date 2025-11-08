@@ -1,29 +1,26 @@
-// ui/main.js
-import { MAX, state, loadState, saveState } from "../core/state.js";
-import { HEROES, ITEMS, loadData, placeholder } from "../core/data.js";
-import { buildSuggestions } from "../core/logic.js";
+import { MAX, state, loadState, saveState } from "./state.js";
+import { HEROES, ITEMS, loadData, placeholder } from "./data.js";
+import { buildSuggestions } from "./logic.js";
 
 const $ = (id) => document.getElementById(id);
 
-// DOM refs (khớp index.html + repo gốc)
 const slots       = $("slots");
 const progress    = $("progress");
-const btnClear    = $("btnClear");
+const btnClear    = $("clear");
 const search      = $("search");
 const clearSearch = $("clearSearch");
-const pool        = $("pool");
-const suggestPick = $("suggestPick");
-const suggestItem = $("suggestItem");
+const grid        = $("grid");
+const pickList    = $("pickList");
+const itemList    = $("itemList");
 const toastEl     = $("toast");
 
-function toast(msg){
+function showToast(msg){
   toastEl.textContent = msg;
   toastEl.style.display = "block";
-  clearTimeout(toast._t);
-  toast._t = setTimeout(()=> (toastEl.style.display="none"), 1800);
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=> (toastEl.style.display="none"), 1500);
 }
 
-// ---------- RENDER ----------
 function renderQueue(){
   slots.innerHTML = "";
   for(let i=0;i<MAX;i++){
@@ -47,7 +44,7 @@ function renderQueue(){
 }
 
 function renderPool(){
-  pool.innerHTML = "";
+  grid.innerHTML = "";
   const term = (search?.value||"").trim().toLowerCase();
 
   Object.entries(HEROES)
@@ -65,77 +62,46 @@ function renderPool(){
         const idx = state.enemyQueue.indexOf(slug);
         if(idx>=0){ state.enemyQueue.splice(idx,1); }
         else if(state.enemyQueue.length < MAX){ state.enemyQueue.push(slug); }
-        else { toast("You have queued 5 enemies already!"); }
+        else { showToast("You have queued 5 enemies already!"); }
         update();
       };
-      pool.appendChild(t);
+      grid.appendChild(t);
     });
 }
 
 function renderSuggestions(){
   const { heroSources, itemSources } = buildSuggestions(state.enemyQueue, HEROES);
 
-  // Heroes
   const heroList = [...heroSources.keys()]
     .filter(s=>HEROES[s])
     .sort((a,b)=>HEROES[a].name.localeCompare(HEROES[b].name));
 
-  suggestPick.innerHTML = heroList.length ? "" : `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
+  pickList.innerHTML = heroList.length ? "" : `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
   heroList.forEach(slug=>{
     const h = HEROES[slug];
     const e = document.createElement("div");
     e.className = "sug";
     e.setAttribute("aria-disabled","true");
-    e.innerHTML = `<img src="${h.img || placeholder('HERO')}" alt="${h.name}">
-                   <div class="sname">${h.name}</div>`;
-    const srcWrap = document.createElement("div");
-    srcWrap.className = "sources";
-    const sources = [...(heroSources.get(slug)||[])];
-    sources.slice(0,4).forEach(slg=>{
-      const box = document.createElement("div"); box.className="src";
-      box.innerHTML = `<img src="${HEROES[slg]?.img || placeholder('H')}" alt="${HEROES[slg]?.name||''}">`;
-      srcWrap.appendChild(box);
-    });
-    if(sources.length>4){
-      const more = document.createElement("div"); more.className="src more"; more.textContent = `+${sources.length-4}`;
-      srcWrap.appendChild(more);
-    }
-    e.appendChild(srcWrap);
-    suggestPick.appendChild(e);
+    e.innerHTML = `<img src="${h.img}" alt="${h.name}"><div class="sname">${h.name}</div>`;
+    pickList.appendChild(e);
   });
 
-  // Items
-  const itemList = [...itemSources.keys()]
+  const itemListArr = [...itemSources.keys()]
     .sort((a,b)=>(ITEMS[a]?.name||a).localeCompare(ITEMS[b]?.name||b));
 
-  suggestItem.innerHTML = itemList.length ? "" : `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
-  itemList.forEach(key=>{
+  itemList.innerHTML = itemListArr.length ? "" : `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
+  itemListArr.forEach(key=>{
     const meta = ITEMS[key] || {name:key, img:placeholder("ITEM")};
     const e = document.createElement("div");
     e.className = "sug";
     e.setAttribute("aria-disabled","true");
-    e.innerHTML = `<img src="${meta.img}" alt="${meta.name}">
-                   <div class="sname">${meta.name}</div>`;
-    const srcWrap = document.createElement("div");
-    srcWrap.className = "sources";
-    const sources = [...(itemSources.get(key)||[])];
-    sources.slice(0,4).forEach(slg=>{
-      const box = document.createElement("div"); box.className="src";
-      box.innerHTML = `<img src="${HEROES[slg]?.img || placeholder('H')}" alt="${HEROES[slg]?.name||''}">`;
-      srcWrap.appendChild(box);
-    });
-    if(sources.length>4){
-      const more = document.createElement("div"); more.className="src more"; more.textContent = `+${sources.length-4}`;
-      srcWrap.appendChild(more);
-    }
-    e.appendChild(srcWrap);
-    suggestItem.appendChild(e);
+    e.innerHTML = `<img src="${meta.img}" alt="${meta.name}"><div class="sname">${meta.name}</div>`;
+    itemList.appendChild(e);
   });
 }
 
 function update(){ renderQueue(); renderPool(); renderSuggestions(); saveState(); }
 
-// ---------- INIT ----------
 btnClear.addEventListener("click", ()=>{ state.enemyQueue=[]; update(); });
 search.addEventListener("input", ()=> renderPool());
 clearSearch.addEventListener("click", ()=>{ search.value=''; renderPool(); });

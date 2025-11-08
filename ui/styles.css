@@ -111,4 +111,65 @@ a{ color: var(--accent-2); text-decoration:none; }
 #rightPanel{ margin-top:16px; }
 .section{ background: var(--panel); border:1px solid var(--border); border-radius:14px; padding:12px; }
 .section h3{ margin: 0 0 10px; color:#c8d9f2; font-size:15px; display:flex; align-items:center; gap:6px; }
-.section h3 .ico{ filter: saturate(0.9);
+.section h3 .ico{ filter: saturate(0.9); }
+
+/* suggestions */
+#suggestPick, #suggestItem{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+#suggestItem{
+  /* 2 hàng gọn */
+  max-height: 210px; /* ~ 2 hàng với ảnh 88x64 + tên + badges */
+  overflow: hidden;
+}
+
+.sug{
+  display:grid; grid-template-columns: 1fr auto; align-items:center; gap:8px;
+  background:#0f1927; border:1px solid var(--border); border-radius:12px; padding:8px;
+}
+.sug img{
+  width:100%; aspect-ratio:16 / 9; height:auto; object-fit:cover; display:block; border-radius:10px;
+}
+.sug .sname{
+  grid-column: 1 / 2; grid-row: 2; margin-top:6px; font-weight:700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sug .sources{
+  grid-column: 2 / 3; grid-row: 1 / span 2; display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-end;
+  align-content:flex-start; min-width: 96px;
+}
+.sources .src{
+  width:28px; height:28px; border-radius:6px; overflow:hidden; border:1px solid #28364c;
+  display:flex; align-items:center; justify-content:center;
+}
+.sources .src img{
+  width:28px; height:28px; object-fit:cover; display:block; border-radius:6px;
+}
+.sources .more{
+  display:flex; align-items:center; justify-content:center; padding:0 6px; font-size:12px;
+  border-radius:6px; border:1px dashed #31435d; color:#9ab0cd;
+}
+
+/* item cards fixed size 88x64 */
+.sug.item img{
+  width:88px; height:64px; object-fit:cover; border-radius:8px;
+}
+
+/* toast */
+#toast{
+  position:fixed; left:50%; bottom:20px; transform:translateX(-50%);
+  background:#162236; color:#d6e6ff; padding:10px 14px; border:1px solid #284064; border-radius:10px;
+  display:none; z-index: 50;
+}
+
+/* footer */
+.footer{
+  margin-top:18px; text-align:center; color:#7f93ac; font-size:12px;
+}
+
+/* responsive tweaks */
+@media (max-width: 940px){
+  .grid{ grid-template-columns: 1fr; }
+}

@@ -1,35 +1,32 @@
-// core/logic.js
-// Build suggestions from selected enemy queue.
-// Trả về heroSources & itemSources, giữ NGUYÊN số lần trùng lặp (không gộp Set).
+import { itemSlug } from "./data.js";
 
-export function buildSuggestions(enemyQueue, HEROES) {
-  // slug -> array các enemySlug gây ra gợi ý (CHO PHÉP TRÙNG)
+/** Tạo map gợi ý + nguồn (hero nào gây ra gợi ý đó), GIỮ TRÙNG LẶP */
+export function buildSuggestions(enemyQueue, HEROES){
+  // heroSlug -> Array(enemySlug)  (giữ trùng)
   const heroSources = new Map();
-  // itemKey -> array các enemySlug gây ra gợi ý (CHO PHÉP TRÙNG)
+  // itemSlug -> Array(enemySlug)  (giữ trùng)
   const itemSources = new Map();
 
-  for (const enSlug of enemyQueue) {
-    const enemy = HEROES[enSlug];
-    if (!enemy) continue;
+  enemyQueue.forEach(eSlug => {
+    const enemy = HEROES[eSlug];
+    if (!enemy) return;
 
-    const countersHero = enemy?.counters?.heroes || [];
-    for (const targetSlug of countersHero) {
-      if (!HEROES[targetSlug]) continue;
-      const arr = heroSources.get(targetSlug) || [];
-      arr.push(enSlug);
-      heroSources.set(targetSlug, arr);
-    }
+    // Gợi ý hero
+    (enemy?.counters || []).forEach(sug => {
+      if (enemyQueue.includes(sug)) return;      // không gợi ý hero đã có trong queue
+      const arr = heroSources.get(sug) || [];
+      arr.push(eSlug);                            // GIỮ TRÙNG
+      heroSources.set(sug, arr);
+    });
 
-    const countersItem = enemy?.counters?.items || [];
-    for (const itemKey of countersItem) {
-      const arr = itemSources.get(itemKey) || [];
-      arr.push(enSlug);
-      itemSources.set(itemKey, arr);
-    }
-  }
-
-  // Không gợi ý những hero đã có trong queue
-  for (const s of enemyQueue) heroSources.delete(s);
+    // Gợi ý item
+    (enemy?.item_counters || []).forEach(it => {
+      const key = itemSlug(it);
+      const arr = itemSources.get(key) || [];
+      arr.push(eSlug);                            // GIỮ TRÙNG
+      itemSources.set(key, arr);
+    });
+  });
 
   return { heroSources, itemSources };
 }

@@ -1,17 +1,16 @@
-// Load heroes/items JSON and expose normalized maps
-export let HEROES = {}; // slug -> { slug, name, img, counters?, good_against?, bad_against?, items? }
-export let ITEMS  = {}; // key  -> { key, name, img }
+export let HEROES = {};
+export let ITEMS  = {};
 
 const txt = (v) => (v ?? "").toString();
 const slugify = (s) => txt(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 export function placeholder(label = "IMG") {
   const t = encodeURIComponent(label.slice(0, 6));
-  return `data:image/svg+xml;utf8,` +
-    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'>` +
-    `<rect width='120' height='120' fill='%23eee'/>` +
+  return "data:image/svg+xml;utf8," +
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'>" +
+    "<rect width='120' height='120' fill='%23eee'/>" +
     `<text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%23999'>${t}</text>` +
-    `</svg>`;
+    "</svg>";
 }
 
 async function loadJSON(path) {
@@ -29,7 +28,6 @@ function normalizeHeroes(list) {
       slug,
       name: h.name || slug,
       img: h.img || h.icon || h.image || `./assets/heroes/${slug}.png`,
-      // optional meta (keep arrays normalized)
       counters: Array.isArray(h.counters) ? h.counters.map(slugify) : [],
       good_against: Array.isArray(h.good_against) ? h.good_against.map(slugify) : [],
       bad_against: Array.isArray(h.bad_against) ? h.bad_against.map(slugify) : [],
@@ -60,14 +58,12 @@ export async function loadData() {
       loadJSON("./items.json")
     ]);
 
-    // Accept both array and object forms
     const heroesList = Array.isArray(heroesRaw) ? heroesRaw : Object.values(heroesRaw || {});
     const itemsList  = Array.isArray(itemsRaw)  ? itemsRaw  : Object.values(itemsRaw || {});
 
     HEROES = normalizeHeroes(heroesList);
     ITEMS  = normalizeItems(itemsList);
   } catch (e) {
-    // Fallback to empty maps; UI will still work
     HEROES = {};
     ITEMS = {};
     console.warn("loadData error:", e);

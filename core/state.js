@@ -1,19 +1,17 @@
 export const MAX = 5;
 
 export const state = {
-  enemyQueue: [],
+  enemyQueue: []
 };
 
 export function loadState() {
   try {
-    const saved = localStorage.getItem("outpick-state");
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      Object.assign(state, parsed);
-    }
-  } catch (_) {}
+    state.enemyQueue = JSON.parse(localStorage.getItem("enemyQueue") || "[]");
+  } catch {
+    state.enemyQueue = [];
+  }
 }
 
 export function saveState() {
-  localStorage.setItem("outpick-state", JSON.stringify(state));
+  localStorage.setItem("enemyQueue", JSON.stringify(state.enemyQueue));
 }

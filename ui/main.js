@@ -1,18 +1,19 @@
-import { MAX, state, loadState, saveState } from "../core/state.js";
-import { HEROES, ITEMS, loadData, placeholder } from "../core/data.js";
-import { buildSuggestions } from "../core/logic.js";
+// main.js (module)
+import { MAX, state, loadState, saveState } from "./state.js";
+import { HEROES, ITEMS, loadData, placeholder } from "./data.js";
+import { buildSuggestions } from "./logic.js";
 
 const $ = (id) => document.getElementById(id);
 
-// DOM refs
+// DOM refs (đồng bộ với index.html)
 const slots       = $("slots");
 const progress    = $("progress");
-const btnClear    = $("btnClear");
+const btnClear    = $("clear");
 const search      = $("search");
 const clearSearch = $("clearSearch");
-const pool        = $("pool");
-const suggestPick = $("suggestPick");
-const suggestItem = $("suggestItem");
+const grid        = $("grid");
+const pickList    = $("pickList");
+const itemList    = $("itemList");
 const toastEl     = $("toast");
 
 function toast(msg){
@@ -46,7 +47,7 @@ function renderQueue(){
 }
 
 function renderPool(){
-  pool.innerHTML = "";
+  grid.innerHTML = "";
   const term = (search?.value||"").trim().toLowerCase();
 
   Object.entries(HEROES)
@@ -67,7 +68,7 @@ function renderPool(){
         else { toast("You have queued 5 enemies already!"); }
         update();
       };
-      pool.appendChild(t);
+      grid.appendChild(t);
     });
 }
 
@@ -79,7 +80,7 @@ function renderSuggestions(){
     .filter(s=>HEROES[s])
     .sort((a,b)=>HEROES[a].name.localeCompare(HEROES[b].name));
 
-  suggestPick.innerHTML = heroList.length ? "" : `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
+  pickList.innerHTML = heroList.length ? "" : `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
   heroList.forEach(slug=>{
     const h = HEROES[slug];
     const e = document.createElement("div");
@@ -100,15 +101,15 @@ function renderSuggestions(){
       srcWrap.appendChild(more);
     }
     e.appendChild(srcWrap);
-    suggestPick.appendChild(e);
+    pickList.appendChild(e);
   });
 
   // Items
-  const itemList = [...itemSources.keys()]
+  const itemListArr = [...itemSources.keys()]
     .sort((a,b)=>(ITEMS[a]?.name||a).localeCompare(ITEMS[b]?.name||b));
 
-  suggestItem.innerHTML = itemList.length ? "" : `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
-  itemList.forEach(key=>{
+  itemList.innerHTML = itemListArr.length ? "" : `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
+  itemListArr.forEach(key=>{
     const meta = ITEMS[key] || {name:key, img:placeholder("ITEM")};
     const e = document.createElement("div");
     e.className = "sug";
@@ -128,7 +129,7 @@ function renderSuggestions(){
       srcWrap.appendChild(more);
     }
     e.appendChild(srcWrap);
-    suggestItem.appendChild(e);
+    itemList.appendChild(e);
   });
 }
 

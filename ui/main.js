@@ -1,19 +1,19 @@
-// app/main.js (module trong thư mục /app)
+// ui/main.js
 import { MAX, state, loadState, saveState } from "../core/state.js";
 import { HEROES, ITEMS, loadData, placeholder } from "../core/data.js";
 import { buildSuggestions } from "../core/logic.js";
 
 const $ = (id) => document.getElementById(id);
 
-// DOM refs (đồng bộ với index.html)
+// DOM refs (khớp index.html + repo gốc)
 const slots       = $("slots");
 const progress    = $("progress");
-const btnClear    = $("clear");
+const btnClear    = $("btnClear");
 const search      = $("search");
 const clearSearch = $("clearSearch");
-const grid        = $("grid");
-const pickList    = $("pickList");
-const itemList    = $("itemList");
+const pool        = $("pool");
+const suggestPick = $("suggestPick");
+const suggestItem = $("suggestItem");
 const toastEl     = $("toast");
 
 function toast(msg){
@@ -47,7 +47,7 @@ function renderQueue(){
 }
 
 function renderPool(){
-  grid.innerHTML = "";
+  pool.innerHTML = "";
   const term = (search?.value||"").trim().toLowerCase();
 
   Object.entries(HEROES)
@@ -68,7 +68,7 @@ function renderPool(){
         else { toast("You have queued 5 enemies already!"); }
         update();
       };
-      grid.appendChild(t);
+      pool.appendChild(t);
     });
 }
 
@@ -80,7 +80,7 @@ function renderSuggestions(){
     .filter(s=>HEROES[s])
     .sort((a,b)=>HEROES[a].name.localeCompare(HEROES[b].name));
 
-  pickList.innerHTML = heroList.length ? "" : `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
+  suggestPick.innerHTML = heroList.length ? "" : `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
   heroList.forEach(slug=>{
     const h = HEROES[slug];
     const e = document.createElement("div");
@@ -101,15 +101,15 @@ function renderSuggestions(){
       srcWrap.appendChild(more);
     }
     e.appendChild(srcWrap);
-    pickList.appendChild(e);
+    suggestPick.appendChild(e);
   });
 
   // Items
-  const itemListArr = [...itemSources.keys()]
+  const itemList = [...itemSources.keys()]
     .sort((a,b)=>(ITEMS[a]?.name||a).localeCompare(ITEMS[b]?.name||b));
 
-  itemList.innerHTML = itemListArr.length ? "" : `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
-  itemListArr.forEach(key=>{
+  suggestItem.innerHTML = itemList.length ? "" : `<span style="color:var(--muted)">Add heroes to the queue.</span>`;
+  itemList.forEach(key=>{
     const meta = ITEMS[key] || {name:key, img:placeholder("ITEM")};
     const e = document.createElement("div");
     e.className = "sug";
@@ -129,7 +129,7 @@ function renderSuggestions(){
       srcWrap.appendChild(more);
     }
     e.appendChild(srcWrap);
-    itemList.appendChild(e);
+    suggestItem.appendChild(e);
   });
 }
 

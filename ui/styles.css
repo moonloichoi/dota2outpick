@@ -84,7 +84,7 @@ main{max-width:1200px;margin:0 auto;padding:8px;display:flex;flex-direction:colu
 .watermark{position:fixed;left:50%;transform:translateX(-50%);bottom:6px;text-align:center;color:var(--muted);opacity:.45;font-size:12px;pointer-events:none}
 .toast{position:fixed;left:50%;bottom:calc(var(--wmh) + 14px);transform:translate(-50%,0);background:#1f2d3a;color:#d9edff;border:1px solid #2a3a52;border-radius:10px;padding:.45rem .7rem;font-weight:700;opacity:.95}
 
-/* helpers to remove inline styles from HTML */
+/* helpers */
 .gapped{gap:var(--gap)}
 .flex1{flex:1}
 

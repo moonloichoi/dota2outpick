@@ -1,0 +1,23 @@
+import { itemSlug } from "./data.js";
+
+/** Tạo map gợi ý + nguồn (hero nào gây ra gợi ý đó) */
+export function buildSuggestions(enemyQueue, HEROES){
+  const heroSources = new Map();  // heroSlug -> Set(enemySlug)
+  const itemSources = new Map();  // itemSlug -> Set(enemySlug)
+
+  enemyQueue.forEach(eSlug=>{
+    const enemy = HEROES[eSlug];
+    (enemy?.counters || []).forEach(sug=>{
+      if (enemyQueue.includes(sug)) return;
+      if (!heroSources.has(sug)) heroSources.set(sug, new Set());
+      heroSources.get(sug).add(eSlug);
+    });
+    (enemy?.item_counters || []).forEach(it=>{
+      const key = itemSlug(it);
+      if (!itemSources.has(key)) itemSources.set(key, new Set());
+      itemSources.get(key).add(eSlug);
+    });
+  });
+
+  return { heroSources, itemSources };
+}

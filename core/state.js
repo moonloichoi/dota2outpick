@@ -1,39 +1,29 @@
 // state.js
-// Lưu và khôi phục trạng thái tối giản, tương thích với update mới.
-// Không ép buộc main.js phải dùng; chỉ cung cấp tiện ích toàn cục an toàn.
+const AppState = {
+  MAX: 5,
+  enemyQueue: [],
 
-(function () {
-  const KEY = "enemyQueue";
-
-  const AppState = {
-    MAX: 5,
-    enemyQueue: [],
-
-    load() {
-      try {
-        const raw = localStorage.getItem(KEY);
-        AppState.enemyQueue = raw ? JSON.parse(raw) : [];
-      } catch (_) {
-        AppState.enemyQueue = [];
-      }
-      return AppState.enemyQueue;
-    },
-
-    save(queue) {
-      try {
-        if (Array.isArray(queue)) AppState.enemyQueue = queue.slice(0, AppState.MAX);
-        localStorage.setItem(KEY, JSON.stringify(AppState.enemyQueue));
-      } catch (_) { /* ignore */ }
-      return AppState.enemyQueue;
-    },
-
-    clear() {
-      AppState.enemyQueue = [];
-      try { localStorage.setItem(KEY, "[]"); } catch (_) { /* ignore */ }
-      return AppState.enemyQueue;
+  load: function () {
+    try {
+      const raw = localStorage.getItem("enemyQueue");
+      this.enemyQueue = raw ? JSON.parse(raw) : [];
+    } catch {
+      this.enemyQueue = [];
     }
-  };
+    return this.enemyQueue;
+  },
 
-  // expose
-  window.AppState = AppState;
-})();
+  save: function (queue) {
+    if (Array.isArray(queue)) this.enemyQueue = queue.slice(0, this.MAX);
+    try {
+      localStorage.setItem("enemyQueue", JSON.stringify(this.enemyQueue));
+    } catch {}
+  },
+
+  clear: function () {
+    this.enemyQueue = [];
+    try {
+      localStorage.setItem("enemyQueue", "[]");
+    } catch {}
+  },
+};

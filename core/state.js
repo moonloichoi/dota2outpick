@@ -1,17 +1,39 @@
-export const MAX = 5;
+// state.js
+// Lưu và khôi phục trạng thái tối giản, tương thích với update mới.
+// Không ép buộc main.js phải dùng; chỉ cung cấp tiện ích toàn cục an toàn.
 
-export const state = {
-  enemyQueue: []
-};
+(function () {
+  const KEY = "enemyQueue";
 
-export function loadState() {
-  try {
-    state.enemyQueue = JSON.parse(localStorage.getItem("enemyQueue") || "[]");
-  } catch {
-    state.enemyQueue = [];
-  }
-}
+  const AppState = {
+    MAX: 5,
+    enemyQueue: [],
 
-export function saveState() {
-  localStorage.setItem("enemyQueue", JSON.stringify(state.enemyQueue));
-}
+    load() {
+      try {
+        const raw = localStorage.getItem(KEY);
+        AppState.enemyQueue = raw ? JSON.parse(raw) : [];
+      } catch (_) {
+        AppState.enemyQueue = [];
+      }
+      return AppState.enemyQueue;
+    },
+
+    save(queue) {
+      try {
+        if (Array.isArray(queue)) AppState.enemyQueue = queue.slice(0, AppState.MAX);
+        localStorage.setItem(KEY, JSON.stringify(AppState.enemyQueue));
+      } catch (_) { /* ignore */ }
+      return AppState.enemyQueue;
+    },
+
+    clear() {
+      AppState.enemyQueue = [];
+      try { localStorage.setItem(KEY, "[]"); } catch (_) { /* ignore */ }
+      return AppState.enemyQueue;
+    }
+  };
+
+  // expose
+  window.AppState = AppState;
+})();

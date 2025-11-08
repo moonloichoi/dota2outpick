@@ -1,22 +1,21 @@
-export function buildSuggestions(enemyQueue, HEROES) {
-  const heroSources = new Map();
-  const itemSources = new Map();
+import { itemSlug } from "./data.js";
 
-  enemyQueue.forEach((slug) => {
-    const enemy = HEROES[slug];
-    if (!enemy) return;
+/** Tạo map gợi ý + nguồn (hero nào gây ra gợi ý đó) */
+export function buildSuggestions(enemyQueue, HEROES){
+  const heroSources = new Map();  // heroSlug -> Set(enemySlug)
+  const itemSources = new Map();  // itemSlug -> Set(enemySlug)
 
-    (enemy.counters || []).forEach((targetSlug) => {
-      if (enemyQueue.includes(targetSlug)) return;
-      const arr = heroSources.get(targetSlug) || new Set();
-      arr.add(slug);
-      heroSources.set(targetSlug, arr);
+  enemyQueue.forEach(eSlug=>{
+    const enemy = HEROES[eSlug];
+    (enemy?.counters || []).forEach(sug=>{
+      if (enemyQueue.includes(sug)) return;
+      if (!heroSources.has(sug)) heroSources.set(sug, new Set());
+      heroSources.get(sug).add(eSlug);
     });
-
-    (enemy.item_counters || []).forEach((item) => {
-      const arr = itemSources.get(item) || new Set();
-      arr.add(slug);
-      itemSources.set(item, arr);
+    (enemy?.item_counters || []).forEach(it=>{
+      const key = itemSlug(it);
+      if (!itemSources.has(key)) itemSources.set(key, new Set());
+      itemSources.get(key).add(eSlug);
     });
   });
 

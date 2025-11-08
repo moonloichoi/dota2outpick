@@ -9,63 +9,55 @@
       --bg:#0b0f14; --card:#111722; --soft:#151f2b; --text:#e6edf3; --muted:#9fb0c3; --line:#1d2a3a; --brand:#3b82f6;
       --hdr:56px;
     }
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%;overflow:hidden}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;padding:0;overflow:hidden}
     body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
 
-    header{height:var(--hdr);display:flex;align-items:center;justify-content:center;background:rgba(11,15,20,.85);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+    /* Header */
+    header{position:sticky;top:0;z-index:5;background:rgba(11,15,20,.85);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+    .bar{max-width:1200px;margin:0 auto;padding:.75rem 1rem;display:flex;gap:12px;align-items:center}
     .brand{font-weight:800}
-    .tag{color:var(--muted);margin-left:8px}
+    .tag{flex:1;text-align:center;color:var(--muted)}
 
-    main{
-      display:grid;
-      grid-template-rows:auto 1fr;
-      height:calc(100vh - var(--hdr) - 22px);
-      max-width:1200px;
-      margin:0 auto;
-      padding:8px;
-      gap:10px;
-    }
+    /* Layout */
+    main{max-width:1200px;margin:0 auto;padding:8px;display:grid;gap:12px;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;height:calc(100vh - var(--hdr) - 22px)}
 
-    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;overflow:hidden;display:flex;flex-direction:column}
 
+    /* Enemy Queue */
+    .queue{grid-column:1 / -1}
     .sectionTitle{display:flex;align-items:center;gap:8px;margin-bottom:6px;color:#cfe1ff}
     .sectionTitle svg{width:18px;height:18px;opacity:.9}
-
-    /* Queue */
-    .queue{display:flex;flex-direction:column;gap:8px}
     .qbody{display:flex;flex-direction:column;gap:8px}
-    .slots{display:flex;gap:8px;justify-content:center;flex-wrap:nowrap}
-    .slot{width:90px;aspect-ratio:16/9;border-radius:10px;display:grid;place-items:center;border:1px dashed #2a3a52;color:#7f92a7;background:#0e141b;overflow:hidden}
+    .slots{display:flex;gap:8px;justify-content:center}
+    .slot{width:104px;aspect-ratio:16/9;border-radius:10px;display:grid;place-items:center;border:1px dashed #2a3a52;color:#7f92a7;background:#0e141b;overflow:hidden}
     .slot.filled{border-style:solid;border-color:#2d466a}
     .slot img{width:100%;height:100%;object-fit:cover}
     .qactions{display:flex;justify-content:center;margin-top:4px}
-    .btn{background:#182330;border:1px solid #23334a;color:#cfe1ff;border-radius:14px;padding:.6rem 1.1rem;font-size:.9rem;font-weight:800;cursor:pointer}
-
-    /* Layout split */
-    .content{display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0;flex:1;overflow:hidden}
+    .btn{background:#182330;border:1px solid #23334a;color:#cfe1ff;border-radius:14px;padding:.6rem 1.1rem;font-size:1rem;font-weight:700;cursor:pointer}
 
     /* Pool */
-    .pool{display:flex;flex-direction:column;min-height:0}
+    .pool{overflow:hidden;display:flex;flex-direction:column;min-height:0}
     .searchbar{position:relative;margin-bottom:8px}
-    .searchbar input{width:100%;background:#0e141b;border:1px solid #1b2a3d;color:var(--text);border-radius:10px;padding:.5rem .7rem}
-    .searchbar button{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:#13202d;border:1px solid #2a3a52;color:#cfe1ff;border-radius:6px;width:22px;height:22px;cursor:pointer}
+    .searchbar input{width:100%;background:#0e141b;border:1px solid #1b2a3d;color:var(--text);border-radius:10px;padding:.55rem .7rem}
+    .searchbar button.clearX{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#0e141b;border:1px solid #213247;color:#9fb0c3;border-radius:8px;padding:.2rem .45rem;cursor:pointer}
     .grid{
       display:grid;
       grid-template-columns:repeat(5,1fr);
       grid-auto-rows:72px;
-      gap:6px;
+      gap:8px;
       overflow:auto;
       padding-right:4px;
     }
-    .tile{position:relative;border:1px solid #213247;border-radius:10px;overflow:hidden;cursor:pointer;background:#1a2432;height:100%}
+    .tile{position:relative;border:1px solid #213247;border-radius:10px;overflow:hidden;cursor:pointer;background:#1a2432;aspect-ratio:16/9}
     .tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-    .tname{position:absolute;left:6px;bottom:4px;font-weight:800;font-size:12px;text-shadow:0 2px 6px rgba(0,0,0,.6)}
-    .tile.picked{outline:3px solid var(--brand);box-shadow:0 0 0 2px rgba(59,130,246,.35) inset}
-    .badge{position:absolute;top:4px;left:4px;background:var(--brand);border-radius:6px;padding:1px 4px;font-size:10px;font-weight:700}
+    .tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.0) 45%, rgba(0,0,0,.55))}
+    .tname{position:absolute;left:8px;bottom:6px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+    .tile.picked{outline:3px solid var(--brand); box-shadow:0 0 0 2px rgba(59,130,246,.35) inset; filter:saturate(1.05) brightness(1.05)}
+    .pickedBadge{position:absolute;top:6px;left:6px;background:var(--brand);border-radius:8px;padding:.1rem .35rem;font-size:.75rem;font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 
-    /* Suggest panels */
-    .panel{display:flex;flex-direction:column;min-height:0}
+    /* Suggestions */
+    .panel{overflow:hidden;display:flex;flex-direction:column;min-height:0;gap:8px}
     .list{
       display:grid;
       grid-template-columns:repeat(5,1fr);
@@ -73,26 +65,30 @@
       overflow:auto;
       padding-right:4px;
     }
-    .sug{position:relative;border:1px solid #213247;border-radius:10px;overflow:hidden;background:#1a2432}
+    .sug{position:relative;border:1px solid #213247;border-radius:12px;overflow:hidden;background:#1a2432}
     .sug.hero{aspect-ratio:16/9;}
     .sug.item{aspect-ratio:11/8;transform:scale(.93)}
     .sug img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
     .sname{position:absolute;left:6px;bottom:4px;font-weight:800;font-size:12px;text-shadow:0 2px 6px rgba(0,0,0,.6)}
-    .sources{position:absolute;right:4px;top:4px;display:flex;gap:3px;flex-wrap:wrap;align-items:center;max-width:50%}
-    .src{flex:0 0 18px;width:18px;height:18px;border-radius:4px;overflow:hidden;border:1px solid rgba(255,255,255,.3)}
+    .sources{position:absolute;right:6px;top:6px;display:flex;gap:3px;flex-wrap:wrap;align-items:center;max-width:50%}
+    .src{flex:0 0 18px;width:18px;height:18px;border-radius:4px;overflow:hidden;border:1px solid rgba(255,255,255,.3);box-shadow:0 1px 4px rgba(0,0,0,.35)}
     .src img{width:100%;height:100%;object-fit:cover}
     .src.more{display:grid;place-items:center;background:#0e141b;color:#cfe1ff;font-size:.7rem;font-weight:800;border:1px solid #2a3a52}
 
-    footer{height:22px;text-align:center;color:var(--muted);opacity:.45;font-size:12px;padding-top:4px}
+    footer{max-width:1200px;margin:4px auto 6px;text-align:center;color:var(--muted);opacity:.45;font-size:12px}
   </style>
 </head>
 <body>
   <header>
-    <div class="brand">Dota2 OutPick</div>
-    <div class="tag">Everything can work in Dota!</div>
+    <div class="bar">
+      <div class="brand">Dota2 OutPick</div>
+      <div class="tag">Everything can work in Dota!</div>
+      <div style="width:18px"></div>
+    </div>
   </header>
 
   <main>
+    <!-- Enemy Queue -->
     <section class="queue card">
       <div class="sectionTitle">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l7 4v6c0 5-3.8 9.3-7 10-3.2-.7-7-5-7-10V6l7-4zM7 9h10v3c0 3.7-2.6 7.3-5 8-2.4-.7-5-4.3-5-8V9z"/></svg>
@@ -105,36 +101,36 @@
       </div>
     </section>
 
-    <div class="content">
-      <section class="pool card">
-        <div class="sectionTitle">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm0 16a5 5 0 100-10 5 5 0 000 10zm0-2a3 3 0 110-6 3 3 0 010 6zm9-4a1 1 0 010 2h-2a1 1 0 110-2h2zM5 12a1 1 0 100 2H3a1 1 0 100-2h2zm13.66-6.66a1 1 0 011.41 1.41l-1.41 1.41a1 1 0 01-1.41-1.41l1.41-1.41zM6.34 17.66a1 1 0 01-1.41-1.41l1.41-1.41a1 1 0 011.41 1.41L6.34 17.66z"/></svg>
-          <strong>Choose your enemies</strong>
-        </div>
-        <div class="searchbar">
-          <input id="search" placeholder="Search hero…" />
-          <button id="clearSearch" title="Clear">×</button>
-        </div>
-        <div id="grid" class="grid"></div>
-      </section>
+    <!-- Pool -->
+    <section class="pool card">
+      <div class="sectionTitle">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm0 16a5 5 0 100-10 5 5 0 000 10zm0-2a3 3 0 110-6 3 3 0 010 6zm9-4a1 1 0 010 2h-2a1 1 0 110-2h2zM5 12a1 1 0 100 2H3a1 1 0 100-2h2zm13.66-6.66a1 1 0 011.41 1.41l-1.41 1.41a1 1 0 01-1.41-1.41l1.41-1.41zM6.34 17.66a1 1 0 01-1.41-1.41l1.41-1.41a1 1 0 011.41 1.41L6.34 17.66z"/></svg>
+        <strong>Choose your enemies</strong>
+      </div>
+      <div class="searchbar">
+        <input id="search" placeholder="Search hero…" />
+        <button id="clearSearch" class="clearX" title="Clear">×</button>
+      </div>
+      <div id="grid" class="grid"></div>
+    </section>
 
-      <section class="panel">
-        <div class="card">
-          <div class="sectionTitle">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C7 3 3 7 3 12v2h5l2 4h4l2-4h5v-2c0-5-4-9-9-9z"/></svg>
-            <strong>You should pick:</strong>
-          </div>
-          <div id="pickList" class="list"></div>
+    <!-- Suggestions -->
+    <section class="panel">
+      <div class="card">
+        <div class="sectionTitle">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C7 3 3 7 3 12v2h5l2 4h4l2-4h5v-2c0-5-4-9-9-9z"/></svg>
+          <strong>You should pick:</strong>
         </div>
-        <div class="card">
-          <div class="sectionTitle">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 6V5a4 4 0 118 0v1h3a1 1 0 011 1v11a3 3 0 01-3 3H7a3 3 0 01-3-3V7a1 1 0 011-1h3zm2 0h4V5a2 2 0 10-4 0v1z"/></svg>
-            <strong>You should buy:</strong>
-          </div>
-          <div id="itemList" class="list"></div>
+        <div id="pickList" class="list"></div>
+      </div>
+      <div class="card">
+        <div class="sectionTitle">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 6V5a4 4 0 118 0v1h3a1 1 0 011 1v11a3 3 0 01-3 3H7a3 3 0 01-3-3V7a1 1 0 011-1h3zm2 0h4V5a2 2 0 10-4 0v1z"/></svg>
+          <strong>You should buy:</strong>
         </div>
-      </section>
-    </div>
+        <div id="itemList" class="list"></div>
+      </div>
+    </section>
   </main>
 
   <footer>designed by moonloichoi in saigon</footer>
